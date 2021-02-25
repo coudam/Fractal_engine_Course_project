@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/coudam/Fractal_engine_Course_project/src/engine/engine.cpp
+engine.hpp
+/home/coudam/Fractal_engine_Course_project/src/engine/engine.hpp
+
+/home/coudam/Fractal_engine_Course_project/src/engine/engine.hpp
+stdlib.h
+-
+vector
+-
+GL/glew.h
+-
+GLFW/glfw3.h
+-
+string
+-
+time.h
+-
+fstream
+-
+iostream
+-
+

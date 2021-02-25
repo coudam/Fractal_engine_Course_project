@@ -1,22 +1,26 @@
 cmake_minimum_required (VERSION 3.8 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "-Wall -O2 -g -lGL")
+set(ENGINE_SOURSE_DIR ${PROJECT_SOURCE_DIR})
 
-project (Fractal_engine)
+project(engine)
 
-find_package(Vulkan REQUIRED)
 find_package(glfw3 REQUIRED)
-find_package(glm REQUIRED)
+#find_package(glm REQUIRED)
 
-add_executable (Fractal_engine main.cpp)
+add_library(engine 
+	STATIC ./engine/engine.cpp
+)
 
-target_link_libraries(Fractal_engine 
-	${Vulkan_LIBRARIES} 
+add_subdirectory(./test)
+
+target_link_libraries(engine 
 	${GLFW_LIBRARIES} 
-	${glm_LIBRARIES}
 	glfw
 )
-target_include_directories(Fractal_engine 
-	PUBLIC ${Vulkan_INCLUDE_DIRS}
-	PUBLIC ${glm_INCLUDE_DIR}
+
+target_include_directories(engine 
 	PUBLIC ${GLFW3_INCLUDE_DIR}
 )
+
+#-lm -lGL -lm -lpthread -ldl -lrt -lm -ldl  -lX11 -lpthread -lxcb -lXau -lXdmcp
