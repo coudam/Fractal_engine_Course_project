@@ -1,6 +1,0 @@
-/home/coudam/Fractal_engine_Course_project/src/build/CMakeFiles/rebuild_cache.dir
-/home/coudam/Fractal_engine_Course_project/src/build/CMakeFiles/edit_cache.dir
-/home/coudam/Fractal_engine_Course_project/src/build/CMakeFiles/engine.dir
-/home/coudam/Fractal_engine_Course_project/src/build/test/CMakeFiles/rebuild_cache.dir
-/home/coudam/Fractal_engine_Course_project/src/build/test/CMakeFiles/edit_cache.dir
-/home/coudam/Fractal_engine_Course_project/src/build/test/CMakeFiles/test.dir

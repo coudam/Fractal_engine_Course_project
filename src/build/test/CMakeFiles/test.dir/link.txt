@@ -1,1 +1,0 @@
-/usr/bin/c++  -Wall -O2 -g -lGL   CMakeFiles/test.dir/main.cpp.o  -o test  ../libengine.a /usr/lib/x86_64-linux-gnu/libglfw.so.3.3 
