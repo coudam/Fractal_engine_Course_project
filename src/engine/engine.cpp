@@ -2,103 +2,129 @@
 
 
 engine::engine(): window_w(600), window_h(800) {
-	std::cout << "engine inited\n";
+    std::cout << "engine inited\n";
 }
 
 engine::~engine() {
-	std::cout << "engine destroed\n";
+    std::cout << "engine destroed\n";
 }
 
 void engine::init() {
-	if (flags & INITED) {
-		printf("allrady inited\n");
-		return;
-	}
+    if (flags & INITED) {
+       printf("allrady inited\n");
+       return;
+    }
 
-	if( !glfwInit() )
-		exit(1);
+    if( !glfwInit() )
+       exit(1);
 
-	window = glfwCreateWindow( window_h, window_w, "play graund", NULL, NULL );
-	if( !window )
-	{
-		std::cerr << "Error on window creating" << std::endl;
-		glfwTerminate();
-		return;
-	}
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	glfwMakeContextCurrent( window );
-	glfwSetKeyCallback(window, key_callback);	
-	glEnable(GL_DEPTH_TEST);
+    window = glfwCreateWindow( window_h, window_w, "play graund", NULL, NULL );
+    if( !window )
+    {
+       std::cerr << "Error on window creating" << std::endl;
+       glfwTerminate();
+       return;
+    }
 
-	GLenum err = glewInit();
-	if (err != GLEW_OK){
-		printf("glew error\n");
-		exit(1);
-	}
-	
-	LoadShaders("~/Fractal_engine_Course_project/src/shaders/src/shader.vert", "~/Fractal_engine_Course_project/src/shaders/src/shader.frag");
-	flags |= INITED;
-	printf("inited\n");
-	return;
+    glfwMakeContextCurrent( window );
+    glfwSetKeyCallback(window, key_callback);  
+    glEnable(GL_DEPTH_TEST);
+
+    GLenum err = glewInit();
+    if (err != GLEW_OK){
+       printf("glew error\n");
+       exit(1);
+    }
+    
+    load_shaders("../../src/shaders/src/shader.vert", "../../src/shaders/src/shader.frag");
+    load_simple_VAO();
+
+    flags |= INITED;
+    printf("inited\n");
+    return;
 } 
+
+void engine::load_simple_VAO() {
+    glGenBuffers(1, &VBO);
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO); 
+    glBufferData(GL_ARRAY_BUFFER, sizeof(voxel), voxel, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(0); 
+    glBindVertexArray(0);
+}
+
+void engine::draw_simple() {
+    glUseProgram(shader); 
+    glBindVertexArray(VAO); 
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 42);
+    glBindVertexArray(0); 
+}
 
 void engine::start() {
 
-	while (!glfwWindowShouldClose(window))
-	{
-		glfwPollEvents();
+    while (!glfwWindowShouldClose(window))
+    {
+        glfwPollEvents();
+        draw_simple();
+        glfwSwapBuffers(window);
+        glfwWaitEvents();
+    }
 
-		glfwSwapBuffers(window);
-		glfwWaitEvents();
-	}
-
-	glfwTerminate();
-	return;
+    glfwTerminate();
+    return;
 }
 
 
 void engine::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
+    } else if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
+        scale += 0.05;
     }
-
 }
 
-void engine::LoadShaders(const char * vertex_file_path,const char * fragment_file_path){
+void engine::read_file(const char * vertex_file_path, std::string &data){
+    std::ifstream f(vertex_file_path);
+    std::string line;
+    data = "";
+    if (f.is_open()){
+        while ( getline (f, line) ){
+            data.append(line);
+            data.append("\n");
+        }
+        f.close();
+    } else 
+    printf("failt to read\n");
+}
+
+void engine::load_shaders(const char * vertex_file_path, const char * fragment_file_path){
 
     int VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
     printf("%d\n", VertexShaderID);
     int FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
     std::string VertexShaderCode;
-    std::ifstream VertexShaderStream(vertex_file_path, std::ios::in);
-    if(VertexShaderStream.is_open())
-    {
-        std::stringstream sstr;
-        sstr << VertexShaderStream.rdbuf();
-        VertexShaderCode = sstr.str();
-        VertexShaderStream.close();
-    }
-
     std::string FragmentShaderCode;
-    std::ifstream FragmentShaderStream(fragment_file_path, std::ios::in);
-    if(FragmentShaderStream.is_open()){
-        std::stringstream sstr;
-        sstr << FragmentShaderStream.rdbuf();
-        FragmentShaderCode = sstr.str();
-        FragmentShaderStream.close();
-    }
+
+    read_file(vertex_file_path, VertexShaderCode);
+    read_file(fragment_file_path, FragmentShaderCode);
+    std::cout << VertexShaderCode << '\n';
+    std::cout << FragmentShaderCode << '\n';
 
     GLint Result = GL_FALSE;
     int InfoLogLength;
 
-    // Компилируем Вершинный шейдер
     printf("Компиляция шейдера: %s\n", vertex_file_path);
     char const * VertexSourcePointer = VertexShaderCode.c_str();
     glShaderSource(VertexShaderID, 1, &VertexSourcePointer , NULL);
     glCompileShader(VertexShaderID);
 
-    // Выполняем проверку Вершинного шейдера
     glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
     glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
     if ( InfoLogLength > 0 ){
@@ -107,13 +133,11 @@ void engine::LoadShaders(const char * vertex_file_path,const char * fragment_fil
       fprintf(stdout, "%s\n", &VertexShaderErrorMessage[0]);
     }
 
-    // Компилируем Фрагментный шейдер
     printf("Компиляция шейдера: %s\n", fragment_file_path);
     char const * FragmentSourcePointer = FragmentShaderCode.c_str();
     glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer , NULL);
     glCompileShader(FragmentShaderID);
 
-    // Проверяем Фрагментный шейдер
     glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
     glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
     if ( InfoLogLength > 0 ){
@@ -121,8 +145,7 @@ void engine::LoadShaders(const char * vertex_file_path,const char * fragment_fil
       fprintf(stdout, "%s\n", &FragmentShaderErrorMessage[0]);
     }
 
-    // Создаем шейдерную программу и привязываем шейдеры к ней
-    fprintf(stdout, "Создаем шейдерную программу и привязываем шейдеры к нейn");
+    fprintf(stdout, "Создаем шейдерную программу и привязываем шейдеры к нейn\n");
     shader = glCreateProgram();
     glAttachShader(shader, VertexShaderID);
     glAttachShader(shader, FragmentShaderID);
