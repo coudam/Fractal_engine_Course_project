@@ -8,8 +8,9 @@ project(engine)
 find_package(GLEW REQUIRED)
 find_package(glfw3 REQUIRED)
 
-add_library(engine 
-	STATIC ./engine/engine.cpp
+add_library(engine STATIC 
+	./engine/engine.cpp
+	./engine/model.cpp
 )
 
 target_link_libraries(engine 
