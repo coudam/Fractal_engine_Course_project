@@ -29,7 +29,8 @@ private:
 	int window_h, window_w;
 	int flags = 0;
 	int shader;
-	GLuint VBO, VAO;
+	GLuint VBO, VAO, NB;
+
 	std::vector <Model> models;
 	std::vector <glm::vec3> vrt_load_arr; 
 	std::vector <glm::vec2> uvs_load_arr;

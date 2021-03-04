@@ -1,7 +1,7 @@
 #include "engine.hpp"
 
 static glm::vec3 translate = {0., 0., 0.};
-static float scale = 0.5;
+static float scale = 0.5, scale_step = 0.001;
 static float rotate_x = 0, rotate_y = 0, rotate_step = 0.01;
 static float pos_x, pos_y;
 static bool mouse_pressed = false;
@@ -22,7 +22,7 @@ void engine::init() {
        return;
     }
 
-    models.push_back(Model("../../models/dragon_1.obj", &vrt_load_arr, &uvs_load_arr, &normls_load_arr));
+    models.push_back(Model("../../models/dragon_2.obj", &vrt_load_arr, &uvs_load_arr, &normls_load_arr));
 
     if( !glfwInit() )
        exit(1);
@@ -47,7 +47,7 @@ void engine::init() {
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glEnable(GL_DEPTH_TEST);
-
+    
     GLenum err = glewInit();
     if (err != GLEW_OK){
        printf("glew error\n");
@@ -62,14 +62,24 @@ void engine::init() {
 } 
 
 void engine::load_simple_VAO() {
+
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(voxel), voxel, GL_STATIC_DRAW);
+    // std::cout << vrt_load_arr.size() << '\n';
+    
+    glGenBuffers(1, &NB);
     glGenBuffers(1, &VBO);
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, NB);
+    glBufferData(GL_ARRAY_BUFFER, normls_load_arr.size() * sizeof(glm::vec3), &normls_load_arr[0], GL_STATIC_DRAW);
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO); 
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(voxel), voxel, GL_STATIC_DRAW);
-    std::cout << vrt_load_arr.size() << '\n';
     glBufferData(GL_ARRAY_BUFFER, vrt_load_arr.size() * sizeof(glm::vec3), &vrt_load_arr[0], GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+
     glEnableVertexAttribArray(0); 
     glBindVertexArray(0);
 }
@@ -149,11 +159,11 @@ void engine::key_callback(GLFWwindow* window, int key, int scancode, int action,
     // std::cout << key << " " << action << " key pressed\n";
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
-    } else if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
-        scale += 0.05;
+    } else if (key == GLFW_KEY_UP && action != GLFW_RELEASE) {
+        scale += scale_step;
         event = true;
-    } else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
-        scale -= 0.05;
+    } else if (key == GLFW_KEY_DOWN && action != GLFW_RELEASE) {
+        scale -= scale_step;
         event = true;
     } else if (key == GLFW_KEY_W && action == GLFW_PRESS) {
         translate.y += 0.05;

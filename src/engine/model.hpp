@@ -9,8 +9,7 @@ class Model{
 public:
 	Model(const char * path, std::vector<glm::vec3> *vrt, std::vector<glm::vec2> *uvs, std::vector<glm::vec3> *normls);
 	// Model();
-	// ~model();
-	GLuint normalbuffer;
+	// ~Model();
 
 private:
 	const char * path;
