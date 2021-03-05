@@ -12,8 +12,10 @@
 #include <iostream>
 #include <sstream>
 
+#include "camera.hpp"
 #include "prime_shapes.hpp"
 #include "model.hpp"
+#include "shader.hpp"
 
 #define INITED 1
 #define SIZEOFARR(arr) sizeof(arr)/sizeof(arr)
@@ -28,9 +30,9 @@ public:
 private:
 	int window_h, window_w;
 	int flags = 0;
-	int shader;
-	GLuint VBO, VAO, NB;
+	GLuint VBO, VAO, NB, VAO_light;
 
+	std::vector <Shader> shaders;
 	std::vector <Model> models;
 	std::vector <glm::vec3> vrt_load_arr; 
 	std::vector <glm::vec2> uvs_load_arr;
@@ -39,10 +41,11 @@ private:
 
 	GLFWwindow* window = 0;
 
-	void read_file(const char *vertex_file_path, std::string &data);
+	// void load_shaders(const char *vertex_file_path,const char *fragment_file_path);
+	// void read_file(const char *vertex_file_path, std::string &data);
+
 	void draw_simple();
 	void load_simple_VAO();
-	void load_shaders(const char *vertex_file_path,const char *fragment_file_path);
 	static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 	static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);

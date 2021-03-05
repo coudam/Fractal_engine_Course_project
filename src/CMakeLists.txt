@@ -11,6 +11,8 @@ find_package(glfw3 REQUIRED)
 add_library(engine STATIC 
 	./engine/engine.cpp
 	./engine/model.cpp
+	./engine/camera.cpp
+	./engine/shader.cpp
 )
 
 target_link_libraries(engine 
