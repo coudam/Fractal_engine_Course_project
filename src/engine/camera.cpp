@@ -11,7 +11,7 @@ Camera::Camera(glm::vec3 pos, glm::vec3 up, float yaw, float pitch) : front(glm:
 	update_camera_vectors();
 }
 
-glm::mat4 Camera::get_view_matrix() {
+glm::mat4 Camera::get_view_matrix() const{
 	return glm::lookAt(position, position + front, up);
 }
 
@@ -43,7 +43,7 @@ void Camera::process_keyboard(int key, float delta, int action) {
 
 	// processes input received from a mouse input system. Expects the offset value in both the x and y direction.
 void Camera::process_mouse_movement(float xoffset, float yoffset, bool constrain_pitch) {
-	std::cout << "rotate x : " << Yaw << " rotate y : " << Pitch << '\n';
+	// std::cout << "rotate x : " << Yaw << " rotate y : " << Pitch << '\n';
 	xoffset *= mouse_sensitivity;
 	yoffset *= mouse_sensitivity;
 

@@ -39,11 +39,9 @@ private:
 	Camera c;
 	GLFWwindow* window = 0;
 
-	void set_proj(int id);
 	void draw_simple();
-	void load_simple_VAO();
-	void set_light();
-	void set_lighing_cube();
+	void animate();
+	void set_model_position();
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 	static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 	static void mouse_callback(GLFWwindow* window, double xpos, double ypos);

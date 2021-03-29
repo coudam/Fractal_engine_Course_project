@@ -4,8 +4,8 @@ layout (location = 0) in vec3 pointCor;
 layout (location = 2) in vec3 normalIn;
 
 layout (location = 1) uniform mat4 view ;
-layout (location = 3) uniform mat4 model = mat4(0.1f);
-layout (location = 4) uniform mat4 projection = mat4(1.f);
+layout (location = 3) uniform mat4 model;
+layout (location = 4) uniform mat4 projection;
 
 out vec3 normal;
 out vec3 pointPos;

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
@@ -20,13 +22,13 @@ public:
 	float movement_speed, mouse_sensitivity, scale_speed;
 	float zoom;
 
-	Camera(glm::vec3 pos = glm::vec3(0.0f, 4.0f, 4.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = -90.0f, float pitch = -45.0f);
+	Camera(glm::vec3 pos = glm::vec3(0.0f, 5.0f, 5.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = -90.0f, float pitch = -45.0f);
 
 	void process_keyboard(int key, float delta, int action);
 	void process_mouse_movement(float xoffset, float yoffset, bool constrain_pitch = false);
 	void process_mouse_scroll(float yoffset);
 
-	glm::mat4 get_view_matrix();
+	glm::mat4 get_view_matrix() const;
 private:
 	void update_camera_vectors();
 };

@@ -74,6 +74,7 @@ Shader::Shader(const char * vertex_file_path, const char * fragment_file_path){
       glGetProgramInfoLog(shader_id, InfoLogLength, NULL, &ProgramErrorMessage[0]);
       fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
     }
+    printf("shader programm id : %d\n", shader_id);
 
     glDeleteShader(VertexShaderID);
     glDeleteShader(FragmentShaderID);
