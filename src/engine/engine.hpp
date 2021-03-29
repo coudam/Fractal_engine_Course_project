@@ -30,22 +30,21 @@ public:
 private:
 	int window_h, window_w;
 	int flags = 0;
-	GLuint VBO, VAO, NB, VAO_light;
+
+	GLuint VBO, VAO, NB, VAO_light, VBO_cube;
 
 	std::vector <Shader> shaders;
 	std::vector <Model> models;
-	std::vector <glm::vec3> vrt_load_arr; 
-	std::vector <glm::vec2> uvs_load_arr;
-	std::vector <glm::vec3> normls_load_arr;
 
-
+	Camera c;
 	GLFWwindow* window = 0;
 
-	// void load_shaders(const char *vertex_file_path,const char *fragment_file_path);
-	// void read_file(const char *vertex_file_path, std::string &data);
-
+	void set_proj(int id);
 	void draw_simple();
 	void load_simple_VAO();
+	void set_light();
+	void set_lighing_cube();
+	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 	static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 	static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);

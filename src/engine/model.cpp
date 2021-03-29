@@ -4,10 +4,13 @@
 // 	std::cout << "create model \n";
 // }
 
-Model::Model(const char * path, 
-	std::vector <glm::vec3> *vrt, 
-	std::vector <glm::vec2> *uvs, 
-	std::vector <glm::vec3> *normls): path(path), out_vertices(vrt), out_uvs(uvs), out_normals(normls){
+
+
+int Model::size() const{
+	return vertices.size();
+}
+
+Model::Model(const char * path): path(path){
 
 	std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
 	std::vector< glm::vec3 > temp_vertices;
@@ -70,15 +73,15 @@ Model::Model(const char * path,
 
     for( unsigned int i=0; i<vertexIndices.size(); i++ ){
     	glm::vec3 v = temp_vertices[vertexIndices[i]-1];
-    	vrt->push_back(v);
+    	vertices.push_back(v);
     }
     for( unsigned int i=0; i<uvIndices.size(); i++ ){
     	glm::vec3 u = temp_normals[uvIndices[i]-1];
-    	uvs->push_back(u);
+    	uvs.push_back(u);
     }
     for( unsigned int i=0; i<normalIndices.size(); i++ ){
     	glm::vec3 n = temp_normals[normalIndices[i]-1];
-    	normls->push_back(n);
+    	normals.push_back(n);
     }
 
 
