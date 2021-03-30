@@ -32,7 +32,7 @@ void engine::init() {
 
     if( !glfwInit() )
        exit(1);
-
+   
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -56,7 +56,7 @@ void engine::init() {
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
 
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_DEPTH_TEST);
 
     GLenum err = glewInit();
@@ -72,7 +72,7 @@ void engine::init() {
     models.push_back(Model(&(shaders[0]), 0, "../../models/dragon_1.obj", GL_TRIANGLES));
     // models.push_back(Model(&(shaders[0]), 0, "../../models/dragon_1.obj", GL_TRIANGLES));
 
-    for (int i = 1; i < 9; ++i) {
+    for (int i = 1; i < 100; ++i) {
         // models.push_back(Model(&(shaders[0]), models[1].VBO, "../../models/dragon_1.obj", GL_TRIANGLES));
         models.push_back(Model(models[1]));
     }
@@ -89,19 +89,19 @@ void engine::set_model_position() {
     models[0].set_model_settings(COLOR, glm::vec3(1.0f, 1.0f, 1.0f));
     models[0].set_model_settings(SCALE, 0.1f);
 
-    for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-            models[1+i*3+j].set_model_settings(TRANSLATE, glm::vec3(4.f - i*4.f, 0.f, 4.f - j*4.f));
-            models[1+i*3+j].set_model_settings(COLOR, glm::vec3(rand()/(float)RAND_MAX, rand()/(float)RAND_MAX, rand()/(float)RAND_MAX));
-            models[1+i*3+j].set_model_settings(SCALE, 0.27f);
+    for (int i = 0; i < 10; ++i) {
+        for (int j = 0; j < 10; ++j) {
+            models[1+i*10+j].set_model_settings(TRANSLATE, glm::vec3(20.f - i*4.f, 0.f, 20.f - j*4.f));
+            models[1+i*10+j].set_model_settings(COLOR, glm::vec3(rand()/(float)RAND_MAX, rand()/(float)RAND_MAX, rand()/(float)RAND_MAX));
+            models[1+i*10+j].set_model_settings(SCALE, 0.27f);
         }
     }
 }
 
 void engine::animate() { 
-    for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-            models[1+i*3+j].set_model_settings(ROTATE_Y, models[1+i*3+j].rotate_y + delta_time*4.f);
+    for (int i = 0; i < 10; ++i) {
+        for (int j = 0; j < 10; ++j) {
+            models[1+i*10+j].set_model_settings(ROTATE_Y, models[1+i*10+j].rotate_y + delta_time*4.f);
         }
     }
 }

@@ -13,8 +13,6 @@ out vec3 pointPos;
 void main()
 {
 	pointPos = vec3(model * vec4(pointCor, 1.0));
-
     gl_Position = projection * view * vec4(pointPos, 1.0);
-    
-    normal = normalIn;
+    normal = mat3(transpose(inverse(model))) * normalIn;
 }

@@ -38,7 +38,7 @@ void Camera::process_keyboard(int key, float delta, int action) {
 	} else if (key == GLFW_KEY_D && action == KEY_PRESS){
 		position += right * velocity;
 	} 
-	std::cout << "position : " << glm::to_string(position) << '\n';
+	// std::cout << "position : " << glm::to_string(position) << '\n';
 }
 
 	// processes input received from a mouse input system. Expects the offset value in both the x and y direction.
