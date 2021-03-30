@@ -10,7 +10,6 @@
 #include <iostream>
 #include <sstream>
 
-
 class Shader{
 public:
 	// ~Shader();

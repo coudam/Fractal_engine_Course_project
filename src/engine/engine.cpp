@@ -4,15 +4,11 @@ int *Window_width;
 int *Window_hight;
 
 #define FPS_FRAMES 20
-#define MODELS_NUM 6
-#define MODELS_DISTANCE 4.
+#define MODELS_NUM 3
+#define MODELS_DISTANCE 6.
 
-static glm::vec3 translate = {0., -0.5, 0.};
-static float scale = 0.1, scale_step = 0.001;
-static float rotate_x = 0, rotate_y = 0, rotate_step = 0.01;
 static float pos_x = 0., pos_y = 0.;
-static bool mouse_pressed = false, mouse_pressed_first = false;
-static bool event = true, first_mouse = true, line = false;
+static bool first_mouse = true, line_mode = false;
 static float delta_time, last_frame, current_frame;
 static float fps_count = 0;
 static std::list<float> fps_q(FPS_FRAMES); 
@@ -21,7 +17,7 @@ Camera *camera;
 float cur_time , delta, last_time;
 
 
-engine::engine(): window_w(1000), window_h(1300) {
+engine::engine(): window_h(1300), window_w(1000) {
     Window_hight = &window_h;
     Window_width = &window_w;
     // engine::t = 0;
@@ -34,8 +30,6 @@ engine::~engine() {
 
 void engine::init() {
     std::cout << std::fixed << std::setprecision(7);
-
-    // for (int i = 0 ; i < FPS_FRAMES; ++i) fps_q.push(0.);
 
     if (flags & INITED) {
        printf("allrady inited\n");
@@ -69,9 +63,9 @@ void engine::init() {
     glfwSetScrollCallback(window, scroll_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
 
-
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_CULL_FACE);
 
     GLenum err = glewInit();
     if (err != GLEW_OK){
@@ -86,7 +80,7 @@ void engine::init() {
     models.push_back(Model(&(shaders[0]), 0, "../../models/dragon_1.obj", GL_TRIANGLES));
     // models.push_back(Model(&(shaders[0]), 0, "../../models/dragon_1.obj", GL_TRIANGLES));
 
-    for (int i = 1; i < MODELS_NUM*MODELS_NUM; ++i) {
+    for (int i = 1; i < MODELS_NUM*MODELS_NUM*MODELS_NUM; ++i) {
         models.push_back(Model(models[1]));
     }
 
@@ -98,29 +92,35 @@ void engine::init() {
 } 
 
 void engine::set_model_position() {
-    models[0].set_model_settings(TRANSLATE, glm::vec3(0.f, 4.f, 4.f));
+    models[0].set_model_settings(TRANSLATE, glm::vec3(0.f, 10.f, 10.f));
     models[0].set_model_settings(COLOR, glm::vec3(1.0f, 1.0f, 1.0f));
     models[0].set_model_settings(SCALE, 0.1f);
 
-    for (int i = 0; i < MODELS_NUM; ++i) {
-        for (int j = 0; j < MODELS_NUM; ++j) {
-            models[1+i*MODELS_NUM+j].set_model_settings(TRANSLATE, glm::vec3(MODELS_NUM*MODELS_DISTANCE/2 - i*MODELS_DISTANCE, 0.f, MODELS_NUM*MODELS_DISTANCE/2 - j*MODELS_DISTANCE));
-            models[1+i*MODELS_NUM+j].set_model_settings(COLOR, glm::vec3(rand()/(float)RAND_MAX, rand()/(float)RAND_MAX, rand()/(float)RAND_MAX));
-            models[1+i*MODELS_NUM+j].set_model_settings(SCALE, 0.27f);
+    for (int k = 0; k < MODELS_NUM; ++k) {
+        for (int i = 0; i < MODELS_NUM; ++i) {
+            for (int j = 0; j < MODELS_NUM; ++j) {
+                models[1+k*MODELS_NUM*MODELS_NUM+i*MODELS_NUM+j].set_model_settings(TRANSLATE, glm::vec3(MODELS_NUM*MODELS_DISTANCE/2 - i*MODELS_DISTANCE,
+                                                                                                          MODELS_NUM*MODELS_DISTANCE/2 - k*MODELS_DISTANCE,
+                                                                                                          MODELS_NUM*MODELS_DISTANCE/2 - j*MODELS_DISTANCE));
+                models[1+k*MODELS_NUM*MODELS_NUM+i*MODELS_NUM+j].set_model_settings(COLOR, glm::vec3(rand()/(float)RAND_MAX, rand()/(float)RAND_MAX, rand()/(float)RAND_MAX));
+                models[1+k*MODELS_NUM*MODELS_NUM+i*MODELS_NUM+j].set_model_settings(SCALE, 0.27f);
+            }
         }
     }
 }
 
 void engine::animate() { 
-    for (int i = 0; i < MODELS_NUM; ++i) {
-        for (int j = 0; j < MODELS_NUM; ++j) {
-            models[1+i*MODELS_NUM+j].set_model_settings(ROTATE_Y, models[1+i*MODELS_NUM+j].rotate_y + delta_time*10.f);
+    for (int k = 0; k < MODELS_NUM; ++k) {
+        for (int i = 0; i < MODELS_NUM; ++i) {
+            for (int j = 0; j < MODELS_NUM; ++j) {
+                models[1+k*MODELS_NUM*MODELS_NUM+i*MODELS_NUM+j].set_model_settings(ROTATE_Y, models[1+k*MODELS_NUM*MODELS_NUM+i*MODELS_NUM+j].rotate_y + delta_time*10.f);
+            }
         }
     }
 }
 
 void engine::draw_simple() {
-    for (int i = 0; i < models.size(); ++i) {
+    for (uint i = 0; i < models.size(); ++i) {
         models[i].draw(*camera);
     }   
 }
@@ -194,8 +194,8 @@ void engine::key_callback(GLFWwindow* window, int key, int scancode, int action,
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     } else if (key == GLFW_KEY_R && action == GLFW_PRESS) {
-        line ^= true;
-        if (line) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        line_mode ^= true;
+        if (line_mode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     } else {
         camera->process_keyboard(key, delta_time, glfwGetKey(window, key));

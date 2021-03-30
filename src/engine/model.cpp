@@ -6,7 +6,7 @@ int Model::size() const{
 
 
 Model::Model(const Model &m): 
-			num_of_points(m.num_of_points), object_color(m.object_color), scale(m.scale), translate(m.translate), VAO(m.VAO), DRAW_MODE(m.DRAW_MODE), rotate_x(m.rotate_x), rotate_y(m.rotate_y), shader(m.shader) {
+			num_of_points(m.num_of_points), scale(m.scale), translate(m.translate), object_color(m.object_color), VAO(m.VAO), rotate_x(m.rotate_x), rotate_y(m.rotate_y), DRAW_MODE(m.DRAW_MODE), shader(m.shader) {
 }
 
 void Model::load_VAO() {
@@ -37,9 +37,9 @@ void Model::load_VAO() {
 }
 
 void Model::draw(const Camera &c, const Model &l) {
-	float last_frame = glfwGetTime();
-	float current_frame;
-    float delta_time;
+	// float last_frame = glfwGetTime();
+	// float current_frame;
+ //    float delta_time;
 
 	int id;
 	glGetIntegerv(GL_CURRENT_PROGRAM,&id);
@@ -67,7 +67,7 @@ void Model::draw(const Camera &c, const Model &l) {
 	shader->setVec3("objectColor", object_color);
 	shader->setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 	shader->setVec3("viewPos", c.position);
-	shader->setVec3("lightPos", glm::vec3(0.f, 4.f, 4.f));
+	shader->setVec3("lightPos", glm::vec3(0.f, 10.f, 10.f));
 
 	// current_frame = glfwGetTime();
  //    delta_time = current_frame - last_frame;
@@ -89,7 +89,7 @@ void Model::draw(const Camera &c, const Model &l) {
 
 
 Model::Model(Shader *s, GLuint vao, GLenum mode, const float *vert, const float *norm, const float *uv, int num):
-			object_color(glm::vec3(1.f, 1.f, 1.f)), scale(0.2f), translate(glm::vec3(0.f)), VAO(vao), DRAW_MODE(mode), rotate_x(0), rotate_y(0), shader(s){ 
+			scale(0.2f), translate(glm::vec3(0.f)), object_color(glm::vec3(1.f, 1.f, 1.f)), VAO(vao), rotate_x(0), rotate_y(0), DRAW_MODE(mode), shader(s){ 
 	std::cout << "load primar shape \n";
 	if (vert)
 		for (int i = 0; i < num; ++i)
@@ -106,7 +106,7 @@ Model::Model(Shader *s, GLuint vao, GLenum mode, const float *vert, const float 
 }	
 
 Model::Model(Shader *s, GLuint vao, const char * path, GLenum mode):
-			object_color(glm::vec3(1.f, 1.f, 1.f)), scale(0.2f), translate(glm::vec3(0.f)), VAO(vao), DRAW_MODE(mode), rotate_x(0), rotate_y(0), path(path), shader(s){ 
+			scale(0.2f), translate(glm::vec3(0.f)), object_color(glm::vec3(1.f, 1.f, 1.f)), VAO(vao), rotate_x(0), rotate_y(0), DRAW_MODE(mode), path(path), shader(s){ 
 
 	std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
 	std::vector< glm::vec3 > temp_vertices;
@@ -121,9 +121,7 @@ Model::Model(Shader *s, GLuint vao, const char * path, GLenum mode):
 		return;
 	}
 
-	int k = 0;
 	while( 1 ){
-		// ++k;
 		char lineHeader[128];
 		int res = fscanf(file, "%s", lineHeader);
 		// std::cout << res << " " << k <<'\n'; 

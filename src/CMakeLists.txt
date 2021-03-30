@@ -16,6 +16,7 @@ add_library(engine STATIC
 	./engine/camera.cpp
 	./engine/shader.cpp
 	./engine/light.cpp
+	./engine/text.cpp
 )
 
 target_link_libraries(engine 
