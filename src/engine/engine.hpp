@@ -14,12 +14,13 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 
+#include "text.hpp"
 #include "camera.hpp"
 #include "prime_shapes.hpp"
 #include "model.hpp"
 #include "shader.hpp"
-#include <iomanip>
 
 
 #define INITED 1
@@ -41,6 +42,7 @@ private:
 	std::vector <Shader> shaders;
 	std::vector <Model> models;
 
+	Text t;
 	Camera c;
 	GLFWwindow* window = 0;
 

@@ -42,7 +42,7 @@ void engine::init() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+    // glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
     // glfwWindowHint( GLFW_DOUBLEBUFFER, GL_FALSE );
     glfwSwapInterval(0);
 
@@ -66,26 +66,30 @@ void engine::init() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_DEPTH_TEST);
     // glEnable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
 
     GLenum err = glewInit();
     if (err != GLEW_OK){
        printf("glew error\n");
        exit(1);
     }
-    camera = &c;    
+    
+    camera = &c;   
+
     shaders.push_back(Shader("../../src/shaders/src/shader.vert", "../../src/shaders/src/shader.frag"));
     shaders.push_back(Shader("../../src/shaders/src/light_shader.vert", "../../src/shaders/src/light_shader.frag"));
+    shaders.push_back(Shader("../../src/shaders/src/text.vert", "../../src/shaders/src/text.frag"));
 
     models.push_back(Model(&(shaders[1]), 0, GL_TRIANGLE_STRIP)); //standart cube
     models.push_back(Model(&(shaders[0]), 0, "../../models/dragon_1.obj", GL_TRIANGLES));
-    // models.push_back(Model(&(shaders[0]), 0, "../../models/dragon_1.obj", GL_TRIANGLES));
 
     for (int i = 1; i < MODELS_NUM*MODELS_NUM*MODELS_NUM; ++i) {
         models.push_back(Model(models[1]));
     }
 
     set_model_position(); 
-
+    t.set_shader(&(shaders[2]));
 
     flags |= INITED;
     return;
@@ -126,8 +130,8 @@ void engine::draw_simple() {
 }
 
 void engine::start() {
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)){
+
         current_frame = glfwGetTime();
         delta_time = current_frame - last_frame;
         last_frame = current_frame;
@@ -135,17 +139,18 @@ void engine::start() {
         fps_q.pop_front(); fps_q.push_back(delta_time);
         for (const auto& i : fps_q) fps_count += i;
         fps_count /= FPS_FRAMES;
-
-        std::cout << "Average delta time per frame for last " << FPS_FRAMES << " frames : " << fps_count <<  " | fps : "<< 1 / fps_count  << '\n';//'\r';
+    
 
         glClearColor(0.1f, 0.1f, 0.2f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        t.draw_text("Average time per frame for last " + std::to_string(FPS_FRAMES) + " frames : " + std::to_string(fps_count), 5.0f, window_h - 25., 0.4f, glm::vec3(0.5, 0.8f, 0.2f));
+        t.draw_text("fps : " + std::to_string(1 / fps_count), 5.0f, window_h - 50., 0.4f, glm::vec3(0.5, 0.8f, 0.2f));
 
         glfwPollEvents();
 
         last_time = glfwGetTime();
         draw_simple();
-        // event = false; 
         cur_time = glfwGetTime();
         delta = cur_time - last_time;
         last_time = cur_time;
