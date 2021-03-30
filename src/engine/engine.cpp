@@ -1,7 +1,10 @@
 #include "engine.hpp"
+#include <iomanip>
 
 int *Window_width;
 int *Window_hight;
+
+#define FPS_FRAMES 20
 
 static glm::vec3 translate = {0., -0.5, 0.};
 static float scale = 0.1, scale_step = 0.001;
@@ -10,6 +13,8 @@ static float pos_x = 0., pos_y = 0.;
 static bool mouse_pressed = false, mouse_pressed_first = false;
 static bool event = true, first_mouse = true, line = false;
 static float delta_time, last_frame, current_frame;
+static float fps_count = 0;
+static std::list<float> fps_q(FPS_FRAMES); 
 Camera *camera;
 
 
@@ -25,6 +30,8 @@ engine::~engine() {
 }
 
 void engine::init() {
+    // for (int i = 0 ; i < FPS_FRAMES; ++i) fps_q.push(0.);
+
     if (flags & INITED) {
        printf("allrady inited\n");
        return;
@@ -32,7 +39,7 @@ void engine::init() {
 
     if( !glfwInit() )
        exit(1);
-   
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -118,12 +125,18 @@ void engine::draw_simple() {
 void engine::start() {
     while (!glfwWindowShouldClose(window))
     {
-        // std::cout << "\n\n";
         current_frame = glfwGetTime();
         delta_time = current_frame - last_frame;
         last_frame = current_frame;
 
-        glClearColor(0.1, 0.1, 0.2, 0.);
+        fps_q.pop_front(); fps_q.push_back(delta_time);
+        for (const auto& i : fps_q) fps_count += i;
+        fps_count /= FPS_FRAMES;
+
+        std::cout << std::fixed << std::setprecision(2);
+        std::cout << "Average delta time per frame for last " << FPS_FRAMES << " frames : " << fps_count <<  " | fps : "<< 1 / fps_count  << '\r';
+
+        glClearColor(0.1f, 0.1f, 0.2f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glfwPollEvents();

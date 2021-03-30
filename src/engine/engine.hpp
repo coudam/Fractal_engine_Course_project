@@ -1,12 +1,13 @@
 #include <stdlib.h>
 #include <vector>
+#include <list>
+#include <string> 
 #include <GL/glew.h> 
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include <string> 
 #include <time.h>
 #include <fstream>
 #include <iostream>
@@ -16,6 +17,7 @@
 #include "prime_shapes.hpp"
 #include "model.hpp"
 #include "shader.hpp"
+
 
 #define INITED 1
 #define SIZEOFARR(arr) sizeof(arr)/sizeof(arr)
