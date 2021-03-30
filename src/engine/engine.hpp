@@ -1,4 +1,4 @@
-#define GLM_ENABLE_EXPERIMENTAL
+#pragma once
 
 #include <stdlib.h>
 #include <vector>

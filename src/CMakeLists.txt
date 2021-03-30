@@ -5,6 +5,8 @@ set(ENGINE_SOURSE_DIR ${PROJECT_SOURCE_DIR})
 
 project(engine)
 
+add_definitions(-DGLM_ENABLE_EXPERIMENTAL)
+
 find_package(GLEW REQUIRED)
 find_package(glfw3 REQUIRED)
 
