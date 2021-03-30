@@ -17,6 +17,7 @@
 #include "prime_shapes.hpp"
 #include "model.hpp"
 #include "shader.hpp"
+#include <iomanip>
 
 
 #define INITED 1

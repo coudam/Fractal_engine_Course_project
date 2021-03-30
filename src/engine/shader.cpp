@@ -21,7 +21,6 @@ void Shader::read_file(const char * vertex_file_path, std::string &data){
 Shader::Shader(const char * vertex_file_path, const char * fragment_file_path){
 
     int VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-    printf("shaderid : %d\n", VertexShaderID);
     int FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
     std::string VertexShaderCode;
@@ -34,8 +33,7 @@ Shader::Shader(const char * vertex_file_path, const char * fragment_file_path){
 
     GLint Result = GL_FALSE;
     int InfoLogLength;
-
-    printf("Компиляция шейдера: %s\n", vertex_file_path);
+    std::cout << "\033[1;33mКомпиляция шейдера: " <<  vertex_file_path << "\033[0m\n"; 
     char const * VertexSourcePointer = VertexShaderCode.c_str();
     glShaderSource(VertexShaderID, 1, &VertexSourcePointer , NULL);
     glCompileShader(VertexShaderID);
@@ -48,7 +46,7 @@ Shader::Shader(const char * vertex_file_path, const char * fragment_file_path){
       fprintf(stdout, "%s\n", &VertexShaderErrorMessage[0]);
     }
 
-    printf("Компиляция шейдера: %s\n", fragment_file_path);
+    std::cout << "\033[1;33mКомпиляция шейдера: " <<  fragment_file_path << "\033[0m\n"; 
     char const * FragmentSourcePointer = FragmentShaderCode.c_str();
     glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer , NULL);
     glCompileShader(FragmentShaderID);
@@ -60,7 +58,7 @@ Shader::Shader(const char * vertex_file_path, const char * fragment_file_path){
       fprintf(stdout, "%s\n", &FragmentShaderErrorMessage[0]);
     }
 
-    fprintf(stdout, "Создаем шейдерную программу и привязываем шейдеры к ней\n");
+    std::cout << "\033[1;33mСоздаем шейдерную программу и привязываем шейдеры к ней\033[0m\n"; 
     shader_id = glCreateProgram();
     glAttachShader(shader_id, VertexShaderID);
     glAttachShader(shader_id, FragmentShaderID);

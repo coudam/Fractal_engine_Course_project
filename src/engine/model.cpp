@@ -36,14 +36,17 @@ void Model::load_VAO() {
 	std::cout << "VAO loaded : " << VAO << '\n';
 }
 
-
 void Model::draw(const Camera &c, const Model &l) {
+	float last_frame = glfwGetTime();
+	float current_frame;
+    float delta_time;
+
 	int id;
 	glGetIntegerv(GL_CURRENT_PROGRAM,&id);
 	// std::cout << path << " " << id << " shader program\n";
-	if (id != *shader)
+	if (id != *shader){
 		glUseProgram(*shader);
-
+	}
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, translate);
 	model = glm::scale(model, scale);
@@ -52,6 +55,11 @@ void Model::draw(const Camera &c, const Model &l) {
 
 	glm::mat4 view = c.get_view_matrix();
 	glm::mat4 projection = glm::perspective(glm::radians(c.zoom), (float)(*Window_width) / (float)(*Window_hight), 0.1f, 1000.0f);
+	
+	// current_frame = glfwGetTime();
+ //    delta_time = current_frame - last_frame;
+ //    last_frame = current_frame;
+ //    std::cout << "culcula : " << delta_time << ' ';
 
 	shader->setMat4("view", view);
 	shader->setMat4("projection", projection);
@@ -61,6 +69,10 @@ void Model::draw(const Camera &c, const Model &l) {
 	shader->setVec3("viewPos", c.position);
 	shader->setVec3("lightPos", glm::vec3(0.f, 4.f, 4.f));
 
+	// current_frame = glfwGetTime();
+ //    delta_time = current_frame - last_frame;
+ //    last_frame = current_frame;
+ //    std::cout << "loading : " << delta_time << ' ';
 	// std::cout<< size() << '\n';	
 	// std::cout << glm::to_string(c.position) << "   /    obj color " <<  glm::to_string(object_color) << "    /   model " <<  glm::to_string(model) << '\n';
 
@@ -68,6 +80,11 @@ void Model::draw(const Camera &c, const Model &l) {
 	glBindVertexArray(VAO);
 	glDrawArrays(DRAW_MODE, 0, num_of_points);
 	glBindVertexArray(0);
+
+	// current_frame = glfwGetTime();
+ //    delta_time = current_frame - last_frame;
+ //    last_frame = current_frame;
+ //    std::cout << "drawing : " << delta_time << '\n';
 }
 
 

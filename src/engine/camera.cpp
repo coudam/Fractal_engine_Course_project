@@ -70,5 +70,5 @@ void Camera::process_mouse_scroll(float yoffset) {
 		zoom = 1.0f;
 	if (zoom > 45.0f)
 		zoom = 45.0f; 
-	std::cout << "zoom : " << zoom << '\n';
+	// std::cout << "zoom : " << zoom << '\n';
 }

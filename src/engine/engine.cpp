@@ -1,10 +1,11 @@
 #include "engine.hpp"
-#include <iomanip>
 
 int *Window_width;
 int *Window_hight;
 
 #define FPS_FRAMES 20
+#define MODELS_NUM 6
+#define MODELS_DISTANCE 4.
 
 static glm::vec3 translate = {0., -0.5, 0.};
 static float scale = 0.1, scale_step = 0.001;
@@ -16,6 +17,8 @@ static float delta_time, last_frame, current_frame;
 static float fps_count = 0;
 static std::list<float> fps_q(FPS_FRAMES); 
 Camera *camera;
+
+float cur_time , delta, last_time;
 
 
 engine::engine(): window_w(1000), window_h(1300) {
@@ -30,6 +33,8 @@ engine::~engine() {
 }
 
 void engine::init() {
+    std::cout << std::fixed << std::setprecision(7);
+
     // for (int i = 0 ; i < FPS_FRAMES; ++i) fps_q.push(0.);
 
     if (flags & INITED) {
@@ -43,8 +48,10 @@ void engine::init() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    // glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+    // glfwWindowHint( GLFW_DOUBLEBUFFER, GL_FALSE );
+    glfwSwapInterval(0);
+
 
     window = glfwCreateWindow(window_h, window_w, "play graund", NULL, NULL);
     if(!window)
@@ -79,8 +86,7 @@ void engine::init() {
     models.push_back(Model(&(shaders[0]), 0, "../../models/dragon_1.obj", GL_TRIANGLES));
     // models.push_back(Model(&(shaders[0]), 0, "../../models/dragon_1.obj", GL_TRIANGLES));
 
-    for (int i = 1; i < 100; ++i) {
-        // models.push_back(Model(&(shaders[0]), models[1].VBO, "../../models/dragon_1.obj", GL_TRIANGLES));
+    for (int i = 1; i < MODELS_NUM*MODELS_NUM; ++i) {
         models.push_back(Model(models[1]));
     }
 
@@ -96,19 +102,19 @@ void engine::set_model_position() {
     models[0].set_model_settings(COLOR, glm::vec3(1.0f, 1.0f, 1.0f));
     models[0].set_model_settings(SCALE, 0.1f);
 
-    for (int i = 0; i < 10; ++i) {
-        for (int j = 0; j < 10; ++j) {
-            models[1+i*10+j].set_model_settings(TRANSLATE, glm::vec3(20.f - i*4.f, 0.f, 20.f - j*4.f));
-            models[1+i*10+j].set_model_settings(COLOR, glm::vec3(rand()/(float)RAND_MAX, rand()/(float)RAND_MAX, rand()/(float)RAND_MAX));
-            models[1+i*10+j].set_model_settings(SCALE, 0.27f);
+    for (int i = 0; i < MODELS_NUM; ++i) {
+        for (int j = 0; j < MODELS_NUM; ++j) {
+            models[1+i*MODELS_NUM+j].set_model_settings(TRANSLATE, glm::vec3(MODELS_NUM*MODELS_DISTANCE/2 - i*MODELS_DISTANCE, 0.f, MODELS_NUM*MODELS_DISTANCE/2 - j*MODELS_DISTANCE));
+            models[1+i*MODELS_NUM+j].set_model_settings(COLOR, glm::vec3(rand()/(float)RAND_MAX, rand()/(float)RAND_MAX, rand()/(float)RAND_MAX));
+            models[1+i*MODELS_NUM+j].set_model_settings(SCALE, 0.27f);
         }
     }
 }
 
 void engine::animate() { 
-    for (int i = 0; i < 10; ++i) {
-        for (int j = 0; j < 10; ++j) {
-            models[1+i*10+j].set_model_settings(ROTATE_Y, models[1+i*10+j].rotate_y + delta_time*4.f);
+    for (int i = 0; i < MODELS_NUM; ++i) {
+        for (int j = 0; j < MODELS_NUM; ++j) {
+            models[1+i*MODELS_NUM+j].set_model_settings(ROTATE_Y, models[1+i*MODELS_NUM+j].rotate_y + delta_time*10.f);
         }
     }
 }
@@ -117,9 +123,6 @@ void engine::draw_simple() {
     for (int i = 0; i < models.size(); ++i) {
         models[i].draw(*camera);
     }   
-    // models[0].draw(*camera);
-    // models[1].draw(*camera);
-
 }
 
 void engine::start() {
@@ -133,18 +136,31 @@ void engine::start() {
         for (const auto& i : fps_q) fps_count += i;
         fps_count /= FPS_FRAMES;
 
-        std::cout << std::fixed << std::setprecision(2);
-        std::cout << "Average delta time per frame for last " << FPS_FRAMES << " frames : " << fps_count <<  " | fps : "<< 1 / fps_count  << '\r';
+        std::cout << "Average delta time per frame for last " << FPS_FRAMES << " frames : " << fps_count <<  " | fps : "<< 1 / fps_count  << '\n';//'\r';
 
         glClearColor(0.1f, 0.1f, 0.2f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glfwPollEvents();
-        
+
+        last_time = glfwGetTime();
         draw_simple();
         // event = false; 
+        cur_time = glfwGetTime();
+        delta = cur_time - last_time;
+        last_time = cur_time;
+        std::cout << "draw : " << delta << '\n';
+
         animate();
+
+        last_time = glfwGetTime();
         glfwSwapBuffers(window);
+        // glFlush();
+        // glfwSwapInterval(0);
+        cur_time = glfwGetTime();
+        delta = cur_time - last_time;
+        last_time = cur_time;
+        std::cout << "swap : " << delta << '\n';
         // glfwWaitEvents();
     }
 
