@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.8 FATAL_ERROR)
 
-project (test)
+project (test1)
 
 include_directories(test
 	${ENGINE_SOURSE_DIR}/engine
