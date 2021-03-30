@@ -1,6 +1,6 @@
 # Graphic engine (in process)
 
-To build :
+To build (Linux):
   #cd $source_dir/src
   #mkdir build
   #cd build
