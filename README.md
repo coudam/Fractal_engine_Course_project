@@ -1,5 +1,7 @@
 # Graphic engine (in process)
 
+	HELLO ^^
+
 To build (Linux):
   #cd $source_dir/src
   #mkdir build
