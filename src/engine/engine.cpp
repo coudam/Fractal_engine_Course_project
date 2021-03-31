@@ -89,7 +89,9 @@ void engine::init() {
     }
 
     set_model_position(); 
-    t.set_shader(&(shaders[2]));
+
+    Time::timer("set_shader", &Text::set_shader, &t, &(shaders[2]));
+    // t.set_shader(&(shaders[2]));
 
     flags |= INITED;
     return;

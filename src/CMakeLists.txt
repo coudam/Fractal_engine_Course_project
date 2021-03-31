@@ -13,7 +13,7 @@ find_package(Freetype REQUIRED)
 find_package(ZLIB REQUIRED)
 
 add_library(engine STATIC 
-	./engine/time.cpp
+	./engine/time.hpp
 	./engine/engine.cpp
 	./engine/model.cpp
 	./engine/camera.cpp
