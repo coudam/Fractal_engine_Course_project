@@ -19,10 +19,10 @@ If you find any bugs/mistaken or you have interesting ideas to help my project, 
 
 TOOD:
 	Interface:
-		- Resizeble window
-		- Test mode, and separate info output
-		- More info in window
-		- Speed tool/debug 
+		- Resizeble window\
+		- Test mode, and separate info output\
+		- More info in window\
+		- Speed tool/debug\
 	Engine:
 		- Rewrite model parser 
 		- Loading more model format (.fbx)
