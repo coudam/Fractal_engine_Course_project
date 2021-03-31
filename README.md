@@ -3,6 +3,7 @@
 	HELLO ^^
 
 To build (Linux):
+
   #cd $source_dir/src
   #mkdir build
   #cd build
@@ -10,12 +11,13 @@ To build (Linux):
   #make
   
 You can check current progress in test after buiding.
-  #./$source_dir/src/build/test/test
+
+  #./$source_dir/src/build/test/test 
  
- If you find any bugs/mistaken or you have interesting ideas to help my project, text me^^.
+If you find any bugs/mistaken or you have interesting ideas to help my project, text me^^.
 
 
-TOOD :
+TOOD:
 	Interface:
 		- Resizeble window
 		- Test mode, and separate info output
