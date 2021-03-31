@@ -51,7 +51,7 @@ void Text::set_shader(Shader *s) {
         return;
     }
 
-    std::string font_name = std::filesystem::path("/home/brfh/Engine/fonts/OpenSans-Regular.ttf");
+    std::string font_name = std::filesystem::path("../../fonts/ComicSans.ttf");
     if (font_name.empty()){
         std::cout <<  "\033[1;31mERROR::FREETYPE: Failed to load font_name\033[0m" << std::endl;
         return;

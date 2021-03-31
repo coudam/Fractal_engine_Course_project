@@ -16,6 +16,7 @@
 #include <sstream>
 #include <iomanip>
 
+#include "time.hpp"
 #include "text.hpp"
 #include "camera.hpp"
 #include "prime_shapes.hpp"
