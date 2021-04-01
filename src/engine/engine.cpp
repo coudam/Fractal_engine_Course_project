@@ -16,8 +16,7 @@ Camera *camera;
 
 float cur_time , delta, last_time;
 
-
-engine::engine(): window_h(1300), window_w(1000) {
+engine::engine(): window_h(1000), window_w(1300) {
     Window_hight = &window_h;
     Window_width = &window_w;
     // engine::t = 0;
@@ -47,7 +46,7 @@ void engine::init() {
     glfwSwapInterval(0);
 
 
-    window = glfwCreateWindow(window_h, window_w, "play graund", NULL, NULL);
+    window = glfwCreateWindow(window_w, window_h, "play graund", NULL, NULL);
     if(!window)
     {
        std::cerr << "Error on window creating" << std::endl;
@@ -68,6 +67,10 @@ void engine::init() {
     // glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
+    
+    // glfwSwapInterval(0);
+
+    glOrtho(0.0f, window_w, window_h, 0.0f, 0.0f, 1.0f);
 
     GLenum err = glewInit();
     if (err != GLEW_OK){
@@ -81,17 +84,21 @@ void engine::init() {
     shaders.push_back(Shader("../../src/shaders/src/light_shader.vert", "../../src/shaders/src/light_shader.frag"));
     shaders.push_back(Shader("../../src/shaders/src/text.vert", "../../src/shaders/src/text.frag"));
 
-    models.push_back(Model(&(shaders[1]), 0, GL_TRIANGLE_STRIP)); //standart cube
-    models.push_back(Model(&(shaders[0]), 0, "../../models/dragon_1.obj", GL_TRIANGLES));
+    models.push_back(Model(&shaders[1], 0, GL_TRIANGLE_STRIP, Shapes::sphere, glm::vec3(0.f, 0.f, 0.f), 3, 40));
+    // models.push_back(Model(&shaders[1], 0, GL_TRIANGLE_STRIP, voxel)); 
+    models.push_back(Model(&(shaders[0]), 0, GL_TRIANGLES, "../../models/dragon_1.obj"));
+    // models.push_back(Model(&shaders[0], 0, GL_TRIANGLE_STRIP, Shapes::sphere, glm::vec3(0.f, 0.f, 0.f), 3, 50));
+
 
     for (int i = 1; i < MODELS_NUM*MODELS_NUM*MODELS_NUM; ++i) {
         models.push_back(Model(models[1]));
     }
 
+    Time::timer("set model pos", &engine::set_model_position, this);
     set_model_position(); 
 
-    Time::timer("set_shader", &Text::set_shader, &t, &(shaders[2]));
-    // t.set_shader(&(shaders[2]));
+    // Time::timer("set_shader", &Text::set_shader, &t, &(shaders[2]));
+    t.set_shader(&(shaders[2]));
 
     flags |= INITED;
     return;
@@ -151,23 +158,12 @@ void engine::start() {
 
         glfwPollEvents();
 
-        last_time = glfwGetTime();
         draw_simple();
-        cur_time = glfwGetTime();
-        delta = cur_time - last_time;
-        last_time = cur_time;
-        std::cout << "draw : " << delta << '\n';
-
         animate();
 
-        last_time = glfwGetTime();
         glfwSwapBuffers(window);
         // glFlush();
         // glfwSwapInterval(0);
-        cur_time = glfwGetTime();
-        delta = cur_time - last_time;
-        last_time = cur_time;
-        std::cout << "swap : " << delta << '\n';
         // glfwWaitEvents();
     }
 

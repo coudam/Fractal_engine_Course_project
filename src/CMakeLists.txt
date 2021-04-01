@@ -20,6 +20,7 @@ add_library(engine STATIC
 	./engine/shader.cpp
 	./engine/light.cpp
 	./engine/text.cpp
+	./engine/math_shapes.cpp
 )
 
 target_link_libraries(engine 

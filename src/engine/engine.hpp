@@ -22,6 +22,7 @@
 #include "prime_shapes.hpp"
 #include "model.hpp"
 #include "shader.hpp"
+#include "math_shapes.cpp"
 
 
 #define INITED 1

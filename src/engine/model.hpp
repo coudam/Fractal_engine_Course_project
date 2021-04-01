@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
+#include <functional>
 
 #include "prime_shapes.hpp"
 #include "shader.hpp"
@@ -26,13 +27,22 @@ class Model{
 public:
 	Model(){}
 	Model(const Model &m);
-	Model(Shader *s, GLuint vao, const char * path, GLenum mode = GL_TRIANGLES);
-	Model(Shader *s, GLuint vao, GLenum mode = GL_TRIANGLES, const float *vert = voxel, const float *normals = voxel_normals, const float *uvs = voxel_uvs, int num = 14);
+	Model(Shader *s, GLuint vao, GLenum mode, const char *path);
+	Model(Shader *s, GLuint vao, GLenum mode, const float *vert = voxel, const float *normals = voxel_normals, const float *uvs = voxel_uvs, int num = 14);
+
+
+	template<typename F, typename... Args>
+	Model(Shader *s, GLuint vao, GLenum mode, F f, Args&&... args):
+				scale(0.2f), translate(glm::vec3(0.f)), object_color(glm::vec3(1.f, 1.f, 1.f)), VAO(vao), rotate_x(0), rotate_y(0), DRAW_MODE(mode), shader(s){
+		f(*this, std::forward<Args>(args)...);
+		// for (auto e : vertices) std::cout << e.x << " " << e.y << " " << e.z << "\n";
+		load_VAO();
+		num_of_points = size();
+	}
 
 	void draw(const Camera &c, const Model &l = Model());
 	int size() const;
 
-	// template<typename T> void set_model_settings(SETTINGS settings, T &&value);
 	template<typename T> //wierd shat; very dengerous dont do that at home)))
 	void set_model_settings(SETTINGS settings, T &&value){
 		switch (settings) {

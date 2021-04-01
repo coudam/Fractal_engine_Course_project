@@ -24,7 +24,7 @@ TOOD:
 		- Resizeble window
 		- Test mode, and separate info output
 		- More info in window
-		- Speed tool/debug
+		-DONE! Speed tool/debug
 	
 	Engine:
 	
