@@ -29,7 +29,6 @@ void Camera::update_camera_vectors(){
 
 void Camera::process_keyboard(int key, float delta) {
 	float velocity = movement_speed * delta;
-	std::cout << " aaa \n";
 	if (key == GLFW_KEY_W){
 		position += front * velocity;
 	} else if (key == GLFW_KEY_S){
@@ -42,23 +41,20 @@ void Camera::process_keyboard(int key, float delta) {
 	// std::cout << "position : " << glm::to_string(position) << '\n';
 }
 
-	// processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-void Camera::process_mouse_movement(float xoffset, float yoffset, bool constrain_pitch) {
-	// std::cout << "rotate x : " << Yaw << " rotate y : " << Pitch << '\n';
+void Camera::process_mouse_movement(float xoffset, float yoffset) {
+	std::cout << "rotate x : " << Yaw << " rotate y : " << Pitch << '\n';
 	xoffset *= mouse_sensitivity;
 	yoffset *= mouse_sensitivity;
 
 	Yaw   += xoffset;
-	Pitch += yoffset;
+	Pitch -= yoffset;
 
-	if (constrain_pitch)
-	{
-		if (Pitch > 89.0f)
-			Pitch = 89.0f;
-		if (Pitch < -89.0f)
-			Pitch = -89.0f;
-	}
-
+	// if (true){
+	// 	if (Pitch > 89.0f)
+	// 		Pitch = 89.0f;
+	// 	if (Pitch < -89.0f)
+	// 		Pitch = -89.0f;
+	// }
 	if (Yaw > 360) Yaw -= 360; else if (Yaw < -360) Yaw += 360; 
 	if (Pitch > 360) Pitch -= 360; else if (Pitch < -360) Pitch += 360;
 

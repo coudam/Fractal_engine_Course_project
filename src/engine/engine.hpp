@@ -47,7 +47,7 @@ private:
 	Text t;
 	Camera c;
 	GLFWwindow* window = 0;
-	Input key_input;
+	Input input;
 
 	void draw_simple();
 	void animate();

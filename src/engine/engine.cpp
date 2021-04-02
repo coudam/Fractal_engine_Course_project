@@ -16,7 +16,7 @@ Camera *camera;
 
 float cur_time , delta, last_time;
 
-engine::engine(): window_h(1000), window_w(1300) {
+engine::engine(): window_h(1000), window_w(1300), c(glm::vec3(0.0f, 15.0f, 15.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -45.0f) {
     Window_hight = &window_h;
     Window_width = &window_w;
     // engine::t = 0;
@@ -56,12 +56,14 @@ void engine::init() {
 
     glfwMakeContextCurrent(window);
 
-    glfwSetCursorPosCallback(window, mouse_callback);
+    // glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetScrollCallback(window, scroll_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
 
-    key_input.set_window(window);
+    camera = &c;
+
+    input.set_hint(window, &camera);
     set_key_action();
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -80,7 +82,6 @@ void engine::init() {
        exit(1);
     }
     
-    camera = &c;   
 
     shaders.push_back(Shader("../../src/shaders/src/shader.vert", "../../src/shaders/src/shader.frag"));
     shaders.push_back(Shader("../../src/shaders/src/light_shader.vert", "../../src/shaders/src/light_shader.frag"));
@@ -107,13 +108,13 @@ void engine::init() {
 } 
 
 void engine::set_key_action(){
-    key_input.add_key_input(GLFW_KEY_ESCAPE, [this](int key, float delta){glfwSetWindowShouldClose(this->window, true);}, PRESS);
-    key_input.add_key_input(GLFW_KEY_R, [this](int key, float delta){
+    input.add_key_input(GLFW_KEY_ESCAPE, [this](int key, float delta){glfwSetWindowShouldClose(this->window, true);}, PRESS);
+    input.add_key_input(GLFW_KEY_R, [this](int key, float delta){
         line_mode ^= true;
         if (line_mode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }, PRESS);
-    key_input.add_key_input({GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D}, [this](int key, float delta){
+    input.add_key_input({GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D}, [this](int key, float delta){
         camera->process_keyboard(key, delta);
     }, PRESS | REPEAT);
 }
@@ -181,7 +182,7 @@ void engine::start() {
         t.draw_text("Average time per frame for last " + std::to_string(FPS_FRAMES) + " frames : " + std::to_string(fps_count), 5.0f, window_h - 25., 0.4f, glm::vec3(0.5, 0.8f, 0.2f));
         t.draw_text("fps : " + std::to_string(1 / fps_count), 5.0f, window_h - 50., 0.4f, glm::vec3(0.5, 0.8f, 0.2f));
 
-        key_input.process(delta_time);
+        input.process(delta_time);
         glfwPollEvents();
 
         draw_simple();
@@ -204,34 +205,19 @@ void engine::mouse_button_callback(GLFWwindow* window, int button, int action, i
 
 void engine::mouse_callback(GLFWwindow* window, double xpos, double ypos){
     // std::cout << "mouse move : " << xpos << " " << ypos << "\n";
-    if (first_mouse)
-    {
-        pos_x = xpos;
-        pos_y = ypos;
-        first_mouse = false;
-    }
+    // if (first_mouse) {
+    //     pos_x = xpos;
+    //     pos_y = ypos;
+    //     first_mouse = false;
+    // }
 
-    float xoffset = xpos - pos_x;
-    float yoffset = pos_y - ypos;
+    // float xoffset = xpos - pos_x;
+    // float yoffset = pos_y - ypos;
 
-    pos_x = xpos;
-    pos_y = ypos;
-    camera->process_mouse_movement(xoffset, yoffset);
+    // pos_x = xpos;
+    // pos_y = ypos;
+    // camera->process_mouse_movement(xoffset, yoffset);
 }
-
-
-// void engine::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
-//     // std::cout << "delta : " << delta_time << " key : " << key << " " << action << " key pressed\n";
-//     // if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-//     //     glfwSetWindowShouldClose(window, true);
-//     // } else if (key == GLFW_KEY_R && action == GLFW_PRESS) {
-//     //     line_mode ^= true;
-//     //     if (line_mode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-//     //     else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-//     // } else {
-//     //     camera->process_keyboard(key, delta_time, glfwGetKey(window, key));
-//     // } 
-// }
 
 void engine::scroll_callback(GLFWwindow* window, double xoffset, double yoffset){
     camera->process_mouse_scroll(yoffset);
