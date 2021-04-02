@@ -17,5 +17,4 @@ public:
 	    std::chrono::duration<double> elapsed_seconds = end-start;
 	    std::cout << "elapsed time of function \"" << name << "\" is : " << elapsed_seconds.count() << "s\n";	    
 	}
-
 };

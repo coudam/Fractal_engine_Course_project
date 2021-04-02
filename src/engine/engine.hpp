@@ -23,7 +23,7 @@
 #include "model.hpp"
 #include "shader.hpp"
 #include "math_shapes.cpp"
-
+#include "key_input.cpp"
 
 #define INITED 1
 #define SIZEOFARR(arr) sizeof(arr)/sizeof(arr)
@@ -47,12 +47,14 @@ private:
 	Text t;
 	Camera c;
 	GLFWwindow* window = 0;
+	Input key_input;
 
 	void draw_simple();
 	void animate();
 	void set_model_position();
+	void set_key_action();
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 	static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 	static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	// static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 };

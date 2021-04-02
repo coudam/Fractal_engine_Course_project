@@ -27,15 +27,16 @@ void Camera::update_camera_vectors(){
 }
 
 
-void Camera::process_keyboard(int key, float delta, int action) {
+void Camera::process_keyboard(int key, float delta) {
 	float velocity = movement_speed * delta;
-	if (key == GLFW_KEY_W && action == KEY_PRESS){
+	std::cout << " aaa \n";
+	if (key == GLFW_KEY_W){
 		position += front * velocity;
-	} else if (key == GLFW_KEY_S && action == KEY_PRESS){
+	} else if (key == GLFW_KEY_S){
 		position -= front * velocity;
-	} else if (key == GLFW_KEY_A && action == KEY_PRESS){
+	} else if (key == GLFW_KEY_A){
 		position -= right * velocity;
-	} else if (key == GLFW_KEY_D && action == KEY_PRESS){
+	} else if (key == GLFW_KEY_D){
 		position += right * velocity;
 	} 
 	// std::cout << "position : " << glm::to_string(position) << '\n';

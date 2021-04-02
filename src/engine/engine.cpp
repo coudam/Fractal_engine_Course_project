@@ -57,10 +57,12 @@ void engine::init() {
     glfwMakeContextCurrent(window);
 
     glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetKeyCallback(window, key_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetScrollCallback(window, scroll_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
+
+    key_input.set_window(window);
+    set_key_action();
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_DEPTH_TEST);
@@ -103,6 +105,29 @@ void engine::init() {
     flags |= INITED;
     return;
 } 
+
+void engine::set_key_action(){
+    key_input.add_key_input(GLFW_KEY_ESCAPE, [this](int key, float delta){glfwSetWindowShouldClose(this->window, true);}, PRESS);
+    key_input.add_key_input(GLFW_KEY_R, [this](int key, float delta){
+        line_mode ^= true;
+        if (line_mode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }, PRESS);
+    key_input.add_key_input({GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D}, [this](int key, float delta){
+        camera->process_keyboard(key, delta);
+    }, PRESS | REPEAT);
+}
+
+     // std::cout << "delta : " << delta_time << " key : " << key << " " << action << " key pressed\n";
+//     // if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+//     //     glfwSetWindowShouldClose(window, true);
+//     // } else if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+//     //     line_mode ^= true;
+//     //     if (line_mode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//     //     else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+//     // } else {
+//     //     camera->process_keyboard(key, delta_time, glfwGetKey(window, key));
+//     // } 
 
 void engine::set_model_position() {
     models[0].set_model_settings(TRANSLATE, glm::vec3(0.f, 10.f, 10.f));
@@ -156,11 +181,13 @@ void engine::start() {
         t.draw_text("Average time per frame for last " + std::to_string(FPS_FRAMES) + " frames : " + std::to_string(fps_count), 5.0f, window_h - 25., 0.4f, glm::vec3(0.5, 0.8f, 0.2f));
         t.draw_text("fps : " + std::to_string(1 / fps_count), 5.0f, window_h - 50., 0.4f, glm::vec3(0.5, 0.8f, 0.2f));
 
+        key_input.process(delta_time);
         glfwPollEvents();
 
         draw_simple();
         animate();
-
+        // int key = glfwGetKey(window); 
+        // std::cout <<  "last key  : " << keyt << '\n'; 
         glfwSwapBuffers(window);
         // glFlush();
         // glfwSwapInterval(0);
@@ -176,6 +203,7 @@ void engine::mouse_button_callback(GLFWwindow* window, int button, int action, i
 }
 
 void engine::mouse_callback(GLFWwindow* window, double xpos, double ypos){
+    // std::cout << "mouse move : " << xpos << " " << ypos << "\n";
     if (first_mouse)
     {
         pos_x = xpos;
@@ -192,18 +220,18 @@ void engine::mouse_callback(GLFWwindow* window, double xpos, double ypos){
 }
 
 
-void engine::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
-    // std::cout << "delta : " << delta_time << " key : " << key << " " << action << " key pressed\n";
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window, true);
-    } else if (key == GLFW_KEY_R && action == GLFW_PRESS) {
-        line_mode ^= true;
-        if (line_mode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    } else {
-        camera->process_keyboard(key, delta_time, glfwGetKey(window, key));
-    } 
-}
+// void engine::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
+//     // std::cout << "delta : " << delta_time << " key : " << key << " " << action << " key pressed\n";
+//     // if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+//     //     glfwSetWindowShouldClose(window, true);
+//     // } else if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+//     //     line_mode ^= true;
+//     //     if (line_mode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//     //     else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+//     // } else {
+//     //     camera->process_keyboard(key, delta_time, glfwGetKey(window, key));
+//     // } 
+// }
 
 void engine::scroll_callback(GLFWwindow* window, double xoffset, double yoffset){
     camera->process_mouse_scroll(yoffset);

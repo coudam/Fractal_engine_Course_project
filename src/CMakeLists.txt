@@ -21,6 +21,7 @@ add_library(engine STATIC
 	./engine/light.cpp
 	./engine/text.cpp
 	./engine/math_shapes.cpp
+	./engine/key_input.cpp
 )
 
 target_link_libraries(engine 

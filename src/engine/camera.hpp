@@ -24,7 +24,7 @@ public:
 
 	Camera(glm::vec3 pos = glm::vec3(0.0f, 15.0f, 15.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = -90.0f, float pitch = -45.0f);
 
-	void process_keyboard(int key, float delta, int action);
+	void process_keyboard(int key, float delta);
 	void process_mouse_movement(float xoffset, float yoffset, bool constrain_pitch = false);
 	void process_mouse_scroll(float yoffset);
 
