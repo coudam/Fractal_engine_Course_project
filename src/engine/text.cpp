@@ -1,14 +1,13 @@
 #include "text.hpp"
 // https://learnopengl.com/In-Practice/Text-Rendering
 
-void Text::draw_text(std::string text, float x, float y, float scale, glm::vec3 color) {
+void Text::draw_text(const std::string &&text, float x, float y, float scale, glm::vec3 color) {
     glUseProgram(*shader);
-    shader->setVec3("textColor", color.x, color.y, color.z);
+    (*shader).setVec3("textColor", color.x, color.y, color.z);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);
-
     glm::mat4 proj = glm::ortho(0.0f, (float)*Window_width, 0.0f, (float)*Window_hight);
-    shader->setMat4("projection", proj);
+    (*shader).setMat4("projection", proj);
     // std::string::const_iterator c;
     for (const auto &c : text) {
         Character ch = Characters[c];
@@ -39,10 +38,9 @@ void Text::draw_text(std::string text, float x, float y, float scale, glm::vec3 
     }
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
-
 }
 
-void Text::set_shader(Shader *s) {
+void Text::set_shader(const safe_vec_ref<Shader> &s) {
     shader = s;
 
     FT_Library ft;

@@ -45,7 +45,6 @@ void engine::init() {
     // glfwWindowHint( GLFW_DOUBLEBUFFER, GL_FALSE );
     glfwSwapInterval(0);
 
-
     window = glfwCreateWindow(window_w, window_h, "play graund", NULL, NULL);
     if(!window)
     {
@@ -55,9 +54,6 @@ void engine::init() {
     }
 
     glfwMakeContextCurrent(window);
-
-    // glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetScrollCallback(window, scroll_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
 
@@ -71,7 +67,6 @@ void engine::init() {
     // glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
-    
     // glfwSwapInterval(0);
 
     glOrtho(0.0f, window_w, window_h, 0.0f, 0.0f, 1.0f);
@@ -82,26 +77,8 @@ void engine::init() {
        exit(1);
     }
     
-
-    shaders.push_back(Shader("../../src/shaders/src/shader.vert", "../../src/shaders/src/shader.frag"));
-    shaders.push_back(Shader("../../src/shaders/src/light_shader.vert", "../../src/shaders/src/light_shader.frag"));
-    shaders.push_back(Shader("../../src/shaders/src/text.vert", "../../src/shaders/src/text.frag"));
-
-    models.push_back(Model(&shaders[1], 0, GL_TRIANGLE_STRIP, Shapes::sphere, glm::vec3(0.f, 0.f, 0.f), 3, 40));
-    // models.push_back(Model(&shaders[1], 0, GL_TRIANGLE_STRIP, voxel)); 
-    models.push_back(Model(&(shaders[0]), 0, GL_TRIANGLES, "../../models/dragon_1.obj"));
-    // models.push_back(Model(&shaders[0], 0, GL_TRIANGLE_STRIP, Shapes::sphere, glm::vec3(0.f, 0.f, 0.f), 3, 50));
-
-
-    for (int i = 1; i < MODELS_NUM*MODELS_NUM*MODELS_NUM; ++i) {
-        models.push_back(Model(models[1]));
-    }
-
-    Time::timer("set model pos", &engine::set_model_position, this);
-    set_model_position(); 
-
-    // Time::timer("set_shader", &Text::set_shader, &t, &(shaders[2]));
-    t.set_shader(&(shaders[2]));
+    safe_vec_ref<Shader> text_shader = set_shader("../../src/shaders/src/text.vert", "../../src/shaders/src/text.frag");
+    t.set_shader(text_shader);
 
     flags |= INITED;
     return;
@@ -119,33 +96,7 @@ void engine::set_key_action(){
     }, PRESS | REPEAT);
 }
 
-     // std::cout << "delta : " << delta_time << " key : " << key << " " << action << " key pressed\n";
-//     // if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-//     //     glfwSetWindowShouldClose(window, true);
-//     // } else if (key == GLFW_KEY_R && action == GLFW_PRESS) {
-//     //     line_mode ^= true;
-//     //     if (line_mode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-//     //     else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-//     // } else {
-//     //     camera->process_keyboard(key, delta_time, glfwGetKey(window, key));
-//     // } 
-
 void engine::set_model_position() {
-    models[0].set_model_settings(TRANSLATE, glm::vec3(0.f, 10.f, 10.f));
-    models[0].set_model_settings(COLOR, glm::vec3(1.0f, 1.0f, 1.0f));
-    models[0].set_model_settings(SCALE, 0.1f);
-
-    for (int k = 0; k < MODELS_NUM; ++k) {
-        for (int i = 0; i < MODELS_NUM; ++i) {
-            for (int j = 0; j < MODELS_NUM; ++j) {
-                models[1+k*MODELS_NUM*MODELS_NUM+i*MODELS_NUM+j].set_model_settings(TRANSLATE, glm::vec3(MODELS_NUM*MODELS_DISTANCE/2 - i*MODELS_DISTANCE,
-                                                                                                          MODELS_NUM*MODELS_DISTANCE/2 - k*MODELS_DISTANCE,
-                                                                                                          MODELS_NUM*MODELS_DISTANCE/2 - j*MODELS_DISTANCE));
-                models[1+k*MODELS_NUM*MODELS_NUM+i*MODELS_NUM+j].set_model_settings(COLOR, glm::vec3(rand()/(float)RAND_MAX, rand()/(float)RAND_MAX, rand()/(float)RAND_MAX));
-                models[1+k*MODELS_NUM*MODELS_NUM+i*MODELS_NUM+j].set_model_settings(SCALE, 0.27f);
-            }
-        }
-    }
 }
 
 void engine::animate() { 
@@ -164,8 +115,18 @@ void engine::draw_simple() {
     }   
 }
 
+safe_vec_ref<Model> engine::set_model(Model &&m) {
+    models.push_back(m);
+    return safe_vec_ref(models, models.size()-1);
+}
+
+safe_vec_ref<Shader> engine::set_shader(const char *path_vrt, const char *path_frg) {
+    shaders.push_back(Shader(path_vrt, path_frg));
+    return safe_vec_ref(shaders, shaders.size()-1);
+}
+
 void engine::start() {
-    while (!glfwWindowShouldClose(window)){
+    while (!glfwWindowShouldClose(window)) {
 
         current_frame = glfwGetTime();
         delta_time = current_frame - last_frame;
@@ -186,101 +147,15 @@ void engine::start() {
         glfwPollEvents();
 
         draw_simple();
-        animate();
-        // int key = glfwGetKey(window); 
-        // std::cout <<  "last key  : " << keyt << '\n'; 
+        // animate();
+
         glfwSwapBuffers(window);
-        // glFlush();
-        // glfwSwapInterval(0);
-        // glfwWaitEvents();
     }
 
     glfwTerminate();
     return;
 }
 
-void engine::mouse_button_callback(GLFWwindow* window, int button, int action, int mods){
-
-}
-
-void engine::mouse_callback(GLFWwindow* window, double xpos, double ypos){
-    // std::cout << "mouse move : " << xpos << " " << ypos << "\n";
-    // if (first_mouse) {
-    //     pos_x = xpos;
-    //     pos_y = ypos;
-    //     first_mouse = false;
-    // }
-
-    // float xoffset = xpos - pos_x;
-    // float yoffset = pos_y - ypos;
-
-    // pos_x = xpos;
-    // pos_y = ypos;
-    // camera->process_mouse_movement(xoffset, yoffset);
-}
-
 void engine::scroll_callback(GLFWwindow* window, double xoffset, double yoffset){
     camera->process_mouse_scroll(yoffset);
 }
-
-
-
-//tresh//tresh//tresh//tresh//tresh//tresh//tresh//tresh//tresh//tresh//tresh//tresh//tresh//tresh//tresh//tresh//tresh//tresh//tresh//tresh//tresh
-
-// void engine::set_proj(int id) {
-//   glm::mat4 view = camera->get_view_matrix();
-//   glm::mat4 projection = glm::perspective(glm::radians(camera->zoom), (float)window_w / (float)window_h, 0.1f, 1000.0f);
-
-//   shaders[id].setMat4("view", view);
-//   // shaders[1].setMat4("view", view);
-
-//   shaders[id].setMat4("projection", projection);
-//   // shaders[1].setMat4("projection", projection);
-
-// }
-
-
-// void engine::load_simple_VAO() {
-//   std::cout << "SDAKSGKJHJDFL\n";
-//   // glBufferData(GL_ARRAY_BUFFER, sizeof(voxel), voxel, GL_STATIC_DRAW);
-//   // std::cout << vrt_load_arr.size() << '\n';
-//   glGenBuffers(1, &NB);
-//   glGenBuffers(1, &VBO);
-//   glGenBuffers(1, &VBO_cube);
-//   glGenVertexArrays(1, &VAO);
-//   glGenVertexArrays(1, &VAO_light);
-    
-// // model
-//   glBindVertexArray(VAO);
-
-//   glBindBuffer(GL_ARRAY_BUFFER, NB);
-//   glBufferData(GL_ARRAY_BUFFER, models[0].normals.size() * sizeof(glm::vec3), models[0].normals.data(), GL_STATIC_DRAW);
-//   glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
-//   glEnableVertexAttribArray(2);
-
-//   glBindBuffer(GL_ARRAY_BUFFER, VBO);
-//   glBufferData(GL_ARRAY_BUFFER, models[0].vertices.size() * sizeof(glm::vec3), models[0].vertices.data(), GL_STATIC_DRAW);
-//   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-//   glEnableVertexAttribArray(0); 
-
-// // light 
-//   glBindVertexArray(VAO_light);
-
-//   glBindBuffer(GL_ARRAY_BUFFER, VBO_cube);
-//   glBufferData(GL_ARRAY_BUFFER, models[1].vertices.size() * sizeof(glm::vec3), models[1].vertices.data(), GL_STATIC_DRAW);
-//   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);   
-//   glEnableVertexAttribArray(0);
-
-
-//   glBindVertexArray(0);
-// }
-
-// void engine::set_light() {
-//   glm::vec3 pos = {10.0f, 20.0f, 0.0f};
-
-//   shaders[0].setVec3("objectColor", 0.2f, 0.2f, 0.2f);
-//   shaders[0].setVec3("lightColor", 0.0f, 1.0f, 1.0f);
-//   shaders[0].setVec3("lightPos", pos);
-//   shaders[0].setVec3("viewPos", camera->position);
-
-// }

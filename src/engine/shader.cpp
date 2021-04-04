@@ -18,7 +18,9 @@ void Shader::read_file(const char * vertex_file_path, std::string &data){
     printf("failt to read\n");
 }
 
-Shader::Shader(const char * vertex_file_path, const char * fragment_file_path){
+Shader::Shader(const Shader &s): shader_id(s.shader_id) {}
+
+Shader::Shader(const char * vertex_file_path, const char * fragment_file_path) {
 
     int VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
     int FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);

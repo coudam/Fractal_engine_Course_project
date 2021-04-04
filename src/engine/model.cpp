@@ -14,8 +14,8 @@ Model::Model(const Model &m):
 // 			scale(0.2f), translate(glm::vec3(0.f)), object_color(glm::vec3(1.f, 1.f, 1.f)), VAO(vao), rotate_x(0), rotate_y(0), DRAW_MODE(mode), shader(s){
 // }
 
-Model::Model(Shader *s, GLuint vao, GLenum mode, const float *vert, const float *norm, const float *uv, int num):
-			scale(0.2f), translate(glm::vec3(0.f)), object_color(glm::vec3(1.f, 1.f, 1.f)), VAO(vao), rotate_x(0), rotate_y(0), DRAW_MODE(mode), shader(s){ 
+Model::Model(safe_vec_ref<Shader> &s, GLenum mode, const float *vert, const float *norm, const float *uv, int num):
+			scale(0.2f), translate(glm::vec3(0.f)), object_color(glm::vec3(1.f, 1.f, 1.f)), rotate_x(0), rotate_y(0), DRAW_MODE(mode), shader(s){ 
 	std::cout << "load primar shape \n";
 	if (vert)
 		for (int i = 0; i < num; ++i)
@@ -31,8 +31,8 @@ Model::Model(Shader *s, GLuint vao, GLenum mode, const float *vert, const float 
 	num_of_points = size();
 }	
 
-Model::Model(Shader *s, GLuint vao, GLenum mode, const char *path):
-			scale(0.2f), translate(glm::vec3(0.f)), object_color(glm::vec3(1.f, 1.f, 1.f)), VAO(vao), rotate_x(0), rotate_y(0), DRAW_MODE(mode), path(path), shader(s){ 
+Model::Model(safe_vec_ref<Shader> &s, GLenum mode, const char *path):
+			scale(0.2f), translate(glm::vec3(0.f)), object_color(glm::vec3(1.f, 1.f, 1.f)), rotate_x(0), rotate_y(0), DRAW_MODE(mode), path(path), shader(s){ 
 
 	std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
 	std::vector< glm::vec3 > temp_vertices;
@@ -109,7 +109,6 @@ Model::Model(Shader *s, GLuint vao, GLenum mode, const char *path):
 }
 
 void Model::load_VAO() {
-	if (VAO > 0) return
 	// NB = 0; VBO = 0; VAO = 0;
 	glGenBuffers(0, &VBO); // problemes !!!!!
 	glGenBuffers(1, &VBO);
@@ -160,13 +159,13 @@ void Model::draw(const Camera &c, const Model &l) {
  //    last_frame = current_frame;
  //    std::cout << "culcula : " << delta_time << ' ';
 
-	shader->setMat4("view", view);
-	shader->setMat4("projection", projection);
-	shader->setMat4("model", model);
-	shader->setVec3("objectColor", object_color);
-	shader->setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-	shader->setVec3("viewPos", c.position);
-	shader->setVec3("lightPos", glm::vec3(0.f, 10.f, 10.f));
+	(*shader).setMat4("view", view);
+	(*shader).setMat4("projection", projection);
+	(*shader).setMat4("model", model);
+	(*shader).setVec3("objectColor", object_color);
+	(*shader).setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+	(*shader).setVec3("viewPos", c.position);
+	(*shader).setVec3("lightPos", glm::vec3(0.f, 10.f, 10.f));
 
 	// current_frame = glfwGetTime();
  //    delta_time = current_frame - last_frame;

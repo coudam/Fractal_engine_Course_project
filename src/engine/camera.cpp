@@ -26,7 +26,6 @@ void Camera::update_camera_vectors(){
 	up	= glm::normalize(glm::cross(right, front));
 }
 
-
 void Camera::process_keyboard(int key, float delta) {
 	float velocity = movement_speed * delta;
 	if (key == GLFW_KEY_W){
@@ -42,7 +41,7 @@ void Camera::process_keyboard(int key, float delta) {
 }
 
 void Camera::process_mouse_movement(float xoffset, float yoffset) {
-	std::cout << "rotate x : " << Yaw << " rotate y : " << Pitch << '\n';
+	// std::cout << "rotate x : " << Yaw << " rotate y : " << Pitch << '\n';
 	xoffset *= mouse_sensitivity;
 	yoffset *= mouse_sensitivity;
 

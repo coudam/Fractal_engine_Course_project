@@ -24,14 +24,19 @@
 #include "shader.hpp"
 #include "math_shapes.cpp"
 #include "key_input.cpp"
+#include "utils.hpp"
 
 #define INITED 1
 #define SIZEOFARR(arr) sizeof(arr)/sizeof(arr)
+
 
 class engine{
 public:
 	engine();
 	~engine();
+
+	safe_vec_ref<Shader> set_shader(const char *path_vrt, const char *path_frg);
+	safe_vec_ref<Model> set_model(Model &&m);
 
 	void init();
 	void start();

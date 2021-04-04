@@ -13,6 +13,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include "utils.hpp"
 #include "shader.hpp"
 
 extern int *Window_hight;
@@ -22,10 +23,10 @@ class Text
 {
 public:
 	Text() {}
-	void draw_text(std::string text, float x, float y, float scale, glm::vec3 color);
-	void set_shader(Shader *s); 
+	void draw_text(const std::string &&text, float x, float y, float scale, glm::vec3 color);
+	void set_shader(const safe_vec_ref<Shader> &s); 
 
-	Shader *shader;
+	safe_vec_ref<Shader> shader;
 private:	
 	struct Character {
 	    unsigned int TextureID;

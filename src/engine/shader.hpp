@@ -13,7 +13,7 @@
 
 class Shader{
 public:
-	// ~Shader();
+	Shader(const Shader &s);
 	Shader(const char *vertex_file_path,const char *fragment_file_path);
 	operator int() const;
 
