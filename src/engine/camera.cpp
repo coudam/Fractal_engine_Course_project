@@ -42,21 +42,15 @@ void Camera::process_keyboard(int key, float delta) {
 }
 
 void Camera::process_mouse_movement(float xoffset, float yoffset) {
-	std::cout << "rotate x : " << Yaw << " rotate y : " << Pitch << '\n';
 	xoffset *= mouse_sensitivity;
 	yoffset *= mouse_sensitivity;
 
 	Yaw   += xoffset;
 	Pitch -= yoffset;
 
-	// if (true){
-	// 	if (Pitch > 89.0f)
-	// 		Pitch = 89.0f;
-	// 	if (Pitch < -89.0f)
-	// 		Pitch = -89.0f;
-	// }
-	if (Yaw > 360) Yaw -= 360; else if (Yaw < -360) Yaw += 360; 
-	if (Pitch > 360) Pitch -= 360; else if (Pitch < -360) Pitch += 360;
+	if (Pitch > 89.0f)Pitch = 89.0f; else if (Pitch < -89.0f)Pitch = -89.0f;
+	if (Yaw > 360)    Yaw -= 360;    else if (Yaw < -360)    Yaw += 360; 
+	if (Pitch > 360)  Pitch -= 360;  else if (Pitch < -360) Pitch += 360;
 
 	update_camera_vectors();
 }

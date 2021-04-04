@@ -68,6 +68,11 @@ public:
 
 	Shader *shader;
 
+////////////////////////////////
+	float zoom = 1., zoomspeed = 0, tspeed = 0.;
+	glm::vec2 t = glm::vec2(0.);
+////////////////////////////////
+	
 	float rotate_x, rotate_y;
 	glm::vec3 scale, translate, object_color;
 

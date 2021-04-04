@@ -154,34 +154,22 @@ void Model::draw(const Camera &c, const Model &l) {
 
 	glm::mat4 view = c.get_view_matrix();
 	glm::mat4 projection = glm::perspective(glm::radians(c.zoom), (float)(*Window_width) / (float)(*Window_hight), 0.1f, 1000.0f);
-	
-	// current_frame = glfwGetTime();
- //    delta_time = current_frame - last_frame;
- //    last_frame = current_frame;
- //    std::cout << "culcula : " << delta_time << ' ';
 
 	shader->setMat4("view", view);
 	shader->setMat4("projection", projection);
 	shader->setMat4("model", model);
 	shader->setVec3("objectColor", object_color);
-	shader->setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+	shader->setVec3("lightColor", glm::vec3(0.0f, 1.0f, 1.0f));
 	shader->setVec3("viewPos", c.position);
 	shader->setVec3("lightPos", glm::vec3(0.f, 10.f, 10.f));
 
-	// current_frame = glfwGetTime();
- //    delta_time = current_frame - last_frame;
- //    last_frame = current_frame;
- //    std::cout << "loading : " << delta_time << ' ';
-	// std::cout<< size() << '\n';	
-	// std::cout << glm::to_string(c.position) << "   /    obj color " <<  glm::to_string(object_color) << "    /   model " <<  glm::to_string(model) << '\n';
-
-	// std::cout << "VAO : " << VAO << " NB : " << NB << " VBO : " << VBO << '\n';
+////////////////////////////////
+	shader->setFloat("zoom", zoom);
+	shader->setVec2("tr", t);
+	shader->setInt("depth", 50 + (int)(0.05/zoom));
+////////////////////////////////
+	
 	glBindVertexArray(VAO);
 	glDrawArrays(DRAW_MODE, 0, num_of_points);
 	glBindVertexArray(0);
-
-	// current_frame = glfwGetTime();
- //    delta_time = current_frame - last_frame;
- //    last_frame = current_frame;
- //    std::cout << "drawing : " << delta_time << '\n';
 }
