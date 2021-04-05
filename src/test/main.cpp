@@ -24,14 +24,10 @@ void init_scene(engine& e) {
     for (int i = 1; i < MODELS_NUM*MODELS_NUM*MODELS_NUM; ++i) {
         models.push_back(e.set_model(Model(*models[0])));
     }
-    std::cout << "size : " << models.size() << '\n';
-    // std::cout << MODELS_NUM << "\n";
-   	// (*models[1]).set_model_settings(TRANSLATE, glm::vec3(1.,1.,1.));
+
     for (int k = 0; k < MODELS_NUM; ++k) {
         for (int i = 0; i < MODELS_NUM; ++i) {
             for (int j = 0; j < MODELS_NUM; ++j) {
-            	std::cout << i << " " << j << " " << k << "\n";
-
                 (*models[k*MODELS_NUM*MODELS_NUM+i*MODELS_NUM+j]).set_model_settings(TRANSLATE, glm::vec3(MODELS_NUM*MODELS_DISTANCE/2 - i*MODELS_DISTANCE,
                                                                                                           MODELS_NUM*MODELS_DISTANCE/2 - k*MODELS_DISTANCE,
                                                                                                           MODELS_NUM*MODELS_DISTANCE/2 - j*MODELS_DISTANCE));
