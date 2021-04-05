@@ -77,7 +77,7 @@ void engine::init() {
        exit(1);
     }
     
-    safe_vec_ref<Shader> text_shader = set_shader("../../src/shaders/src/text.vert", "../../src/shaders/src/text.frag");
+    safe_vec_ptr<Shader> text_shader = set_shader("../../src/shaders/src/text.vert", "../../src/shaders/src/text.frag");
     t.set_shader(text_shader);
 
     flags |= INITED;
@@ -115,14 +115,14 @@ void engine::draw_simple() {
     }   
 }
 
-safe_vec_ref<Model> engine::set_model(Model &&m) {
+safe_vec_ptr<Model> engine::set_model(Model &&m) {
     models.push_back(m);
-    return safe_vec_ref(models, models.size()-1);
+    return safe_vec_ptr(models, models.size()-1);
 }
 
-safe_vec_ref<Shader> engine::set_shader(const char *path_vrt, const char *path_frg) {
+safe_vec_ptr<Shader> engine::set_shader(const char *path_vrt, const char *path_frg) {
     shaders.push_back(Shader(path_vrt, path_frg));
-    return safe_vec_ref(shaders, shaders.size()-1);
+    return safe_vec_ptr(shaders, shaders.size()-1);
 }
 
 void engine::start() {

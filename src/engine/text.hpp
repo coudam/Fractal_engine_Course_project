@@ -24,9 +24,9 @@ class Text
 public:
 	Text() {}
 	void draw_text(const std::string &&text, float x, float y, float scale, glm::vec3 color);
-	void set_shader(const safe_vec_ref<Shader> &s); 
+	void set_shader(const safe_vec_ptr<Shader> &s); 
 
-	safe_vec_ref<Shader> shader;
+	safe_vec_ptr<Shader> shader;
 private:	
 	struct Character {
 	    unsigned int TextureID;

@@ -28,12 +28,11 @@ class Model{
 public:
 	Model(){}
 	Model(const Model &m);
-	Model(safe_vec_ref<Shader> &s, GLenum mode, const char *path);
-	Model(safe_vec_ref<Shader> &s, GLenum mode, const float *vert = voxel, const float *normals = voxel_normals, const float *uvs = voxel_uvs, int num = 14);
-
+	Model(safe_vec_ptr<Shader> &s, GLenum mode, const char *path);
+	Model(safe_vec_ptr<Shader> &s, GLenum mode, const float *vert = voxel, const float *normals = voxel_normals, const float *uvs = voxel_uvs, int num = 14);
 
 	template<typename F, typename... Args>
-	Model(safe_vec_ref<Shader> &s, GLenum mode, F f, Args&&... args):
+	Model(safe_vec_ptr<Shader> &s, GLenum mode, F f, Args&&... args):
 				scale(0.2f), translate(glm::vec3(0.f)), object_color(glm::vec3(1.f, 1.f, 1.f)), rotate_x(0), rotate_y(0), DRAW_MODE(mode), shader(s){
 		f(*this, std::forward<Args>(args)...);
 		load_VAO();
@@ -66,7 +65,7 @@ public:
 	} //
 
 
-	safe_vec_ref<Shader> shader;
+	safe_vec_ptr<Shader> shader;
 
 	float rotate_x, rotate_y;
 	glm::vec3 scale, translate, object_color;
